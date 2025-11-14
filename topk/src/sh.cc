@@ -15,6 +15,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.#include <iostream>
 **/
+#include "fp/rk61.hpp"
+
 #include <string>
 #include <chrono>
 #include <ctime>
@@ -33,25 +35,31 @@
 using namespace std;
 
 void output_top_k(unsigned char * sequence, vector<pair<int64_t,uint32_t>> &topK, string filename) {
+    /*
     ofstream of(filename, ios::out);
     if (!of) {
-        cout << "Error opening file: " << filename << endl;
+        cerr << "Error opening file: " << filename << endl;
         exit(1);
     }
+    */
+    
+    fp::RabinKarp61 rk(257);
 
     for (auto &u : topK) {
+        uint64_t fp = 0;
 		for(uint32_t j=0; j<u.second;j++)
-			of << sequence[u.first+j]; 
-		of << endl;
+            fp = rk.push(fp, sequence[u.first+j]);
+
+		cout << fp << "," << u.second << "," << 0 << endl;
     }
-    of.close();
+    // of.close();
 }
 
 int main(int argc, char* argv[])
 {
 	if(argc<3)
 	{	
-		cout << "Usage: " << argv[0] << " text-file " << " K " << endl;
+		cerr << "Usage: " << argv[0] << " text-file " << " K " << endl;
 		return -1;
 	}
 	
@@ -78,8 +86,8 @@ int main(int argc, char* argv[])
 	sequence = input_seq_char;
     	sequence[++n]='\0';
 	
-	cout << "Text is of length n = " << n - 1 << "." << endl;
-	cout << "K = " << K << endl;
+	cerr << "Text is of length n = " << n - 1 << "." << endl;
+	cerr << "K = " << K << endl;
 
 	std::chrono::steady_clock::time_point  stream_begin = std::chrono::steady_clock::now();
 
@@ -90,7 +98,7 @@ int main(int argc, char* argv[])
 	HeavySketch.extractTopK(sequence, n, K, L, topK);
 
 	std::chrono::steady_clock::time_point  stream_end = std::chrono::steady_clock::now();
-	cout<<"Top-K computation time: "<< std::chrono::duration_cast<std::chrono::milliseconds>(stream_end - stream_begin).count() << "[ms]." << std::endl;	
+	cerr<<"Top-K computation time: "<< std::chrono::duration_cast<std::chrono::milliseconds>(stream_end - stream_begin).count() << "[ms]." << std::endl;	
 	output_top_k(sequence,topK, string(argv[1]) + "_sh_top_K" + to_string(K));
 	free (sequence);
 	return 0;

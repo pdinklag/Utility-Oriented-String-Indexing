@@ -2,7 +2,7 @@ CFG_FILE := ../path.cfg
 SDSL_LIB_DIR := $(shell grep '^SDSL_LIB_DIR =' $(CFG_FILE) | cut -d'=' -f2)
 
 CC=     g++
-CFLAGS= -D_USE_64 -fopenmp -msse3 -Ofast -fomit-frame-pointer -funroll-loops -march=native -std=c++17 -O3 -DNDEBUG
+CFLAGS= -D_USE_64 -fopenmp -msse3 -Ofast -fomit-frame-pointer -funroll-loops -march=native -std=c++20 -O3 -march=native -DNDEBUG
 INCLUDE= -I../include -I${SDSL_LIB_DIR}/include
 LIBS= -L${SDSL_LIB_DIR}/lib -lsdsl -ldivsufsort -ldivsufsort64
 
