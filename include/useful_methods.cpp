@@ -6,9 +6,10 @@
 #include "krfp.h"
 
 int64_t display_mallinfo2(void) {
-    struct mallinfo2 mi;
-    mi = mallinfo2();
-    return (int64_t)(mi.uordblks + mi.hblkhd);
+    // struct mallinfo2 mi;
+    // mi = mallinfo2();
+    // return (int64_t)(mi.uordblks + mi.hblkhd);
+    return 0;
 }
 
 INT lcp(unsigned char *x, INT M, vector<unsigned char> y, INT l, INT a_size, INT w_size) {
