@@ -30,6 +30,7 @@
 #include "krfp.h"
 #include "utils.h"
 #include "unordered_dense.h"
+#include "pm.hpp"
 
 #include "heavykeeperplus.hpp"
 
@@ -84,7 +85,8 @@ int main(int argc, char* argv[])
 	cerr << "Text is of length n = " << n - 1 << "." << endl;
 	cerr << "K = " << K << endl;
 
-	std::chrono::steady_clock::time_point  stream_begin = std::chrono::steady_clock::now();
+    pm::MemoryTimePhase phase;
+    phase.start();
 
 	vector<pair<int64_t,uint32_t>> topK; 
 	auto cms_hk_ncols =(256*K<268435456?256*K:268435456); // temporary: min between 256*K and 2^28
@@ -92,8 +94,9 @@ int main(int argc, char* argv[])
 	
 	HeavySketch.extractTopK(sequence, n, K, L, topK);
 
-	std::chrono::steady_clock::time_point  stream_end = std::chrono::steady_clock::now();
-	cerr<<"Top-K computation time: "<< std::chrono::duration_cast<std::chrono::milliseconds>(stream_end - stream_begin).count() << "[ms]." << std::endl;	
+    phase.stop();
+	cerr<<"Top-K computation time: "<< phase.get_metric<pm::Stopwatch::ElapsedTimeMillisMetric>() << "ms" << std::endl;	
+    cerr<<"Top-K computation peak mem: "<< phase.get_metric<pm::MallocCounter::MemoryPeakMetric>() << std::endl;	
     
     if(argc > 3) {
         ofstream of(argv[3]);

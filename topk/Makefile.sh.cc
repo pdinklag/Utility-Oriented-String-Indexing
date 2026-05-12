@@ -2,7 +2,7 @@ CFG_FILE := ../path.cfg
 SDSL_LIB_DIR := $(shell grep '^SDSL_LIB_DIR =' $(CFG_FILE) | cut -d'=' -f2)
 
 CC=     g++
-CFLAGS= -D_USE_64 -fopenmp -msse3 -Ofast -fomit-frame-pointer -funroll-loops -march=native -std=c++20 -O3 -march=native -DNDEBUG
+CFLAGS= -DPM_MALLOC -D_USE_64 -fopenmp -msse3 -Ofast -fomit-frame-pointer -funroll-loops -march=native -std=c++20 -O3 -march=native -DNDEBUG
 INCLUDE= -I../include -I${SDSL_LIB_DIR}/include
 LIBS= -L${SDSL_LIB_DIR}/lib -lsdsl -ldivsufsort -ldivsufsort64 -ltbb
 
@@ -12,7 +12,7 @@ BUILD_DIR= ../build
 NAME= sh
 EXE= ${NAME}
 
-INCLUDE_FILES= utils.cc krfp.cc useful_methods.cpp
+INCLUDE_FILES= utils.cc krfp.cc useful_methods.cpp malloc_callback.cpp malloc_override.cpp
 SRC= $(SRC_DIR)/${NAME}.cc $(addprefix $(INCLUDE_DIR)/, $(INCLUDE_FILES))
 OBJ= $(patsubst %.cc,$(BUILD_DIR)/%.o,$(notdir $(SRC:.cpp=.cc)))
 
